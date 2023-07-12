@@ -35,4 +35,9 @@ class UserFacade(
     fun checkUserId(userId: Long?) {
         if (userRepository.existsUserByUserId(userId)) throw UserAlreadyExistsException()
     }
+    @Transactional
+    fun findByUsername(username: String): User {
+        return userRepository.findByUsername(username)
+            .orElseThrow { throw UserNotFoundException() }
+    }
 }
