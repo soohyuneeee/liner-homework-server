@@ -6,5 +6,6 @@ data class CreatePageRequest(
     val userId: Long,
     val pageUrl: String,
     val title: String,
-    val openStatus: OpenStatus
+    val openStatus: OpenStatus,
+    val mentionedUserName: String
 )
