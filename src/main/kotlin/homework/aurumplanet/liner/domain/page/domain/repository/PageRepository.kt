@@ -1,5 +1,6 @@
 package homework.aurumplanet.liner.domain.page.domain.repository
 
+import homework.aurumplanet.liner.domain.collection.domain.enums.OpenStatus
 import homework.aurumplanet.liner.domain.page.domain.PageEntity
 import homework.aurumplanet.liner.domain.user.domain.User
 import org.springframework.data.domain.Page
@@ -16,6 +17,6 @@ interface PageRepository : JpaRepository<PageEntity, Long> {
     @Query("select p from PageEntity p join fetch p.highlights h where p.user = :user order by h.updatedAt desc")
     fun findPagesWithHighlightsOrderByUpdatedAtDesc(user: User): List<PageEntity>
 
-    @Query("select p from PageEntity p where p in (select m.page from Mention m where m.user = :user) or p.openStatus = :openStatus")
-    fun findPagesWithMentionsOrPublic(user: User, openStatus: String, pageable: Pageable): Page<PageEntity>
+    @Query("select p from PageEntity p join fetch p.highlights h where p in (select m.page from Mention m where m.user = :user) or p.openStatus = :openStatus")
+    fun findPagesWithMentionsOrPublic(user: User, openStatus: OpenStatus, pageable: Pageable): Page<PageEntity>
 }
