@@ -9,7 +9,7 @@ import jakarta.persistence.*
 
 @Entity
 @Table(name = "tbl_page")
-class Page(
+class PageEntity(
     @Column(length = 50, nullable = false)
     var url: String,
     @Column(length = 20, nullable = false)

@@ -3,7 +3,7 @@ package homework.aurumplanet.liner.domain.page.service
 import homework.aurumplanet.liner.domain.collection.domain.enums.OpenStatus
 import homework.aurumplanet.liner.domain.mention.domain.Mention
 import homework.aurumplanet.liner.domain.mention.domain.repository.MentionRepository
-import homework.aurumplanet.liner.domain.page.domain.Page
+import homework.aurumplanet.liner.domain.page.domain.PageEntity
 import homework.aurumplanet.liner.domain.page.domain.repository.PageRepository
 import homework.aurumplanet.liner.domain.page.presentation.dto.request.CreatePageRequest
 import homework.aurumplanet.liner.domain.user.domain.User
@@ -25,7 +25,7 @@ class CreatePageService(
                 val mentionedUserList: List<String> = request.mentionedUserName.split(",")
                 val mentionedUsers: List<User> = mentionedUserList.map { userFacade.findByUsername(it) }
                 val page = pageRepository.save(
-                    Page(
+                    PageEntity(
                         url = request.pageUrl,
                         user = user,
                         title = request.title,
@@ -44,7 +44,7 @@ class CreatePageService(
             }
         } else {
             pageRepository.save(
-                Page(
+                PageEntity(
                     url = request.pageUrl,
                     user = user,
                     title = request.title,
