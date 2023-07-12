@@ -12,8 +12,10 @@ import homework.aurumplanet.liner.domain.user.facade.UserFacade
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
-import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import java.util.*
 
 @Service
 class GetFeedsService(
@@ -33,7 +35,7 @@ class GetFeedsService(
                 feed = GetPageResponse(
                     nickname = it.user.nickname,
                     username = it.user.username,
-                    pageCreateAt = it.createdAt.toString(),
+                    pageCreateAt = formatToLocalDateTime(it.createdAt),
                     pageId = it.id,
                     pageUrl = it.url,
                     pageTitle = it.title,
@@ -47,5 +49,9 @@ class GetFeedsService(
                 )
             )
         })
+    }
+    fun formatToLocalDateTime(localDateTime: LocalDateTime?): String {
+        val formatter = DateTimeFormatter.ofPattern("MMM dd, yyyy", Locale.ENGLISH)
+        return localDateTime?.format(formatter).toString()
     }
 }
