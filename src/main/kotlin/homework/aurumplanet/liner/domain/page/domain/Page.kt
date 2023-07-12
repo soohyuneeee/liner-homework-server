@@ -1,6 +1,8 @@
 package homework.aurumplanet.liner.domain.page.domain
 
+import homework.aurumplanet.liner.domain.collection.domain.enums.OpenStatus
 import homework.aurumplanet.liner.domain.highlight.domain.Highlight
+import homework.aurumplanet.liner.domain.mention.domain.Mention
 import homework.aurumplanet.liner.domain.user.domain.User
 import homework.aurumplanet.liner.global.entity.BaseTimeEntity
 import jakarta.persistence.*
@@ -8,13 +10,19 @@ import jakarta.persistence.*
 @Entity
 @Table(name = "tbl_page")
 class Page(
-    @Column(length = 50, nullable = false, unique = true)
+    @Column(length = 50, nullable = false)
     var url: String,
+    @Column(length = 20, nullable = false)
+    var openStatus: OpenStatus,
+    @Column(length = 100, nullable = false)
+    var title: String,
     @ManyToOne
     @JoinColumn(name = "user_id")
     var user: User,
     @OneToMany(mappedBy = "page")
     var highlights: MutableList<Highlight> = mutableListOf(),
+    @OneToMany(mappedBy = "page")
+    var mentions: MutableList<Mention> = mutableListOf(),
     @Column
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long? = null,
