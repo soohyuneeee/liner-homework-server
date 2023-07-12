@@ -15,4 +15,7 @@ interface PageRepository : JpaRepository<PageEntity, Long> {
 
     @Query("select p from PageEntity p join fetch p.highlights h where p in (select m.page from Mention m where m.user = :user) or p.openStatus = :openStatus or p.user = :user order by h.createdAt desc")
     fun findPagesWithMentionsOrPublic(user: User, openStatus: OpenStatus, pageable: Pageable): Page<PageEntity>
+    @Query("select p from PageEntity p join fetch p.highlights h where p.user = :user order by h.createdAt desc")
+    fun findPagesByUser(user: User, pageable: Pageable): Page<PageEntity>
+
 }
