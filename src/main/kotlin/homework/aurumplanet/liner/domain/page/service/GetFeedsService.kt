@@ -22,7 +22,7 @@ class GetFeedsService(
 ) {
     fun execute(request: GetFeedsRequest): Page<GetFeedResponse> {
         val user = userFacade.findUserByUserId(request.userId)
-        val pageable: Pageable = PageRequest.of(request.page - 1, request.size, Sort.by("h.createdAt").descending())
+        val pageable: Pageable = PageRequest.of(request.page - 1, request.size)
         val pages: Page<PageEntity> = pageRepository.findPagesWithMentionsOrPublic(user, OpenStatus.PUBLIC, pageable)
         return pages.map {
             GetFeedResponse(
