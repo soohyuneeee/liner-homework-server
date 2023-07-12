@@ -21,7 +21,7 @@ class CreatePageService(
     fun execute(request: CreatePageRequest) {
         val user = userFacade.findUserByUserId(request.userId)
         if (request.openStatus == OpenStatus.MENTIONED) {
-            if (request.mentionedUserName.isNotEmpty()) {
+            if (!request.mentionedUserName.isNullOrEmpty()) {
                 val mentionedUserList: List<String> = request.mentionedUserName.split(",")
                 val mentionedUsers: List<User> = mentionedUserList.map { userFacade.findByUsername(it) }
                 val page = pageRepository.save(
