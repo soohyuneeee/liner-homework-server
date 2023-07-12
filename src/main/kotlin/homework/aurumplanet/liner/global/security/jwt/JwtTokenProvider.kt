@@ -51,7 +51,7 @@ class JwtTokenProvider(
         return Keys.hmacShaKeyFor(keyBytes)
     }
 
-    fun getEmail(token: String): String {
+    fun getUserId(token: String): String {
         return extractAllClaims(token)
             .get("userId", String::class.java)
     }

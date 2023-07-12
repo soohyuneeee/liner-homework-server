@@ -25,7 +25,7 @@ class JwtAuthenticationFilter(
 
     @Throws(ExpiredJwtException::class)
     private fun setAuthentication(token: String, request: HttpServletRequest) {
-        val userDetails = authDetailsService.loadUserByUsername(jwtTokenProvider.getEmail(token))
+        val userDetails = authDetailsService.loadUserByUsername(jwtTokenProvider.getUserId(token))
         val authentication = UsernamePasswordAuthenticationToken(userDetails, null, userDetails.authorities)
         authentication.details = WebAuthenticationDetailsSource().buildDetails(request)
         SecurityContextHolder.getContext().authentication = authentication

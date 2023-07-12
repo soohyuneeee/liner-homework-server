@@ -20,12 +20,6 @@ class UserFacade(
     }
 
     @Transactional
-    fun findUserByUserIdAsString(userId: String): User {
-        return userRepository.findUserByUserId(userId.toLong())
-            .orElseThrow { throw UserNotFoundException() }
-    }
-
-    @Transactional
     fun getCurrentUser(): User {
         val auth = SecurityContextHolder.getContext().authentication.principal as AuthDetails
         return auth.user

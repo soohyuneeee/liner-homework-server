@@ -11,6 +11,6 @@ class AuthDetailsService(
 ) : UserDetailsService {
 
     override fun loadUserByUsername(userId: String): UserDetails {
-        return AuthDetails(userFacade.findUserByUserIdAsString(userId))
+        return AuthDetails(userFacade.findUserByUserId(userId.toLong()))
     }
 }
