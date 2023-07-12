@@ -1,0 +1,41 @@
+spring:
+  main:
+    allow-bean-definition-overriding: true
+  config:
+    import: classpath:/env.yml
+  profiles:
+    active: local
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+
+  datasource:
+    url: jdbc:mysql://127.0.0.1:3306/linerserver
+    username: root
+    password: 1234
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    database: mysql
+    show-sql: true
+    generate-ddl: true
+    hibernate:
+      ddl-auto: update
+  cache:
+    type: redis
+  data:
+    redis:
+      host: ${redis.host}
+      port: ${redis.port}
+debug: true
+
+logging:
+  level:
+    org.springframework.orm.jpa: DEBUG
+    org.springframework.transaction: DEBUG
+
+jwt:
+  access-token-valid-time: ${jwt.access-token-valid-time}
+  refresh-token-valid-time: ${jwt.refresh-token-valid-time}
+  prefix: Bearer
+  header: Authorization
+  secret-key: ${jwt.secret-key}
