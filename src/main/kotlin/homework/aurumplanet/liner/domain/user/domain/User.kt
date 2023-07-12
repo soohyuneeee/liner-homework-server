@@ -1,5 +1,6 @@
 package homework.aurumplanet.liner.domain.user.domain
 
+import homework.aurumplanet.liner.domain.mention.domain.Mention
 import homework.aurumplanet.liner.domain.page.domain.Page
 import homework.aurumplanet.liner.global.entity.BaseTimeEntity
 import jakarta.persistence.*
@@ -21,6 +22,9 @@ class User(
 
     @OneToMany(mappedBy = "user")
     var pages: MutableList<Page> = mutableListOf(),
+
+    @OneToMany(mappedBy = "user")
+    var mentions: MutableList<Mention> = mutableListOf(),
     @Column
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long? = null,
