@@ -17,7 +17,7 @@ class CreateHighlightService(
     ) {
     @Transactional
     fun execute(request: CreateHighlightRequest) {
-        val user = userFacade.findUserByUserId(request.userId)
+        val user = userFacade.getCurrentUser()
         val page = pageFacade.findByUserAndUrl(user, request.pageUrl)
         highlightRepository.save(
             Highlight(
