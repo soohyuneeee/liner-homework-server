@@ -1,6 +1,6 @@
 package homework.aurumplanet.liner.domain.highlight.domain
 
-import homework.aurumplanet.liner.domain.page.domain.Page
+import homework.aurumplanet.liner.domain.page.domain.PageEntity
 import homework.aurumplanet.liner.global.entity.BaseTimeEntity
 import jakarta.persistence.*
 
@@ -13,7 +13,7 @@ class Highlight(
     var colorHex: String,
     @ManyToOne
     @JoinColumn(name = "page_id")
-    var page: Page,
+    var page: PageEntity,
     @Column
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long? = null,
