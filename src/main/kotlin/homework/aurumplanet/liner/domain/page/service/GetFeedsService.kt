@@ -4,7 +4,6 @@ import homework.aurumplanet.liner.domain.collection.domain.enums.OpenStatus
 import homework.aurumplanet.liner.domain.page.domain.PageEntity
 import homework.aurumplanet.liner.domain.page.domain.repository.PageRepository
 import homework.aurumplanet.liner.domain.page.presentation.dto.response.GetFeedListResponse
-import homework.aurumplanet.liner.domain.page.presentation.dto.response.GetFeedResponse
 import homework.aurumplanet.liner.domain.page.presentation.dto.response.GetHighlightResponse
 import homework.aurumplanet.liner.domain.page.presentation.dto.response.GetPageResponse
 import homework.aurumplanet.liner.domain.user.facade.UserFacade
@@ -28,24 +27,22 @@ class GetFeedsService(
         val pages: Page<PageEntity> = pageRepository.findPagesWithMentionsOrPublic(user, OpenStatus.PUBLIC, pageable)
         return GetFeedListResponse(
             currentPage = pages.number + 1,
-            hasMorePage = pages.hasNext(),
+            hasMorePage = (pages.totalPages - 2 > pages.number),
             feedList = pages.content.map {
-                GetFeedResponse(
-                    feed = GetPageResponse(
-                        nickname = it.user.nickname,
-                        username = it.user.username,
-                        pageCreateAt = formatToLocalDateTime(it.createdAt),
-                        pageId = it.id,
-                        pageUrl = it.url,
-                        pageTitle = it.title,
-                        highlights = it.highlights.take(3).map { highlight ->
-                            GetHighlightResponse(
-                                highlightId = highlight.id,
-                                colorHex = highlight.colorHex,
-                                text = highlight.text
-                            )
-                        }
-                    )
+                GetPageResponse(
+                    nickname = it.user.nickname,
+                    username = it.user.username,
+                    pageCreateAt = formatToLocalDateTime(it.createdAt),
+                    pageId = it.id,
+                    pageUrl = it.url,
+                    pageTitle = it.title,
+                    highlights = it.highlights.take(3).map { highlight ->
+                        GetHighlightResponse(
+                            highlightId = highlight.id,
+                            colorHex = highlight.colorHex,
+                            text = highlight.text
+                        )
+                    }
                 )
             })
     }
