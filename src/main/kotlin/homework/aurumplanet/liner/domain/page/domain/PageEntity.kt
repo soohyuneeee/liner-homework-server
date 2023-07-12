@@ -17,6 +17,8 @@ class PageEntity(
     var openStatus: OpenStatus,
     @Column(length = 100, nullable = false)
     var title: String,
+    @Column(length = 100)
+    var mentionedUserList: String? = null,
     @ManyToOne
     @JoinColumn(name = "user_id")
     var user: User,
@@ -29,5 +31,11 @@ class PageEntity(
     var id: Long? = null,
 
     ) : BaseTimeEntity() {
+
+    fun updatePage(title: String, openStatus: OpenStatus, mentionedUserList: String? = null) {
+        this.openStatus = openStatus
+        this.title = title
+        this.mentionedUserList = mentionedUserList
+    }
 
 }
