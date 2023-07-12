@@ -12,6 +12,7 @@ import jakarta.persistence.*
 class PageEntity(
     @Column(length = 50, nullable = false)
     var url: String,
+    @Enumerated(EnumType.STRING)
     @Column(length = 20, nullable = false)
     var openStatus: OpenStatus,
     @Column(length = 100, nullable = false)
