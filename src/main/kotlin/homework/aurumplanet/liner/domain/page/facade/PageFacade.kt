@@ -22,4 +22,9 @@ class PageFacade(
         if(pageRepository.existsByUserAndUrl(user, url))
             throw PageAlreadyExistsException()
     }
+    @Transactional
+    fun findById(pageId: Long): PageEntity {
+        return pageRepository.findById(pageId)
+            .orElseThrow { throw PageNotFoundException() }
+    }
 }
