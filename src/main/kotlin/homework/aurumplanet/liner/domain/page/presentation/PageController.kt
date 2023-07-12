@@ -1,16 +1,12 @@
 package homework.aurumplanet.liner.domain.page.presentation
 
 import homework.aurumplanet.liner.domain.page.presentation.dto.request.CreatePageRequest
-import homework.aurumplanet.liner.domain.page.presentation.dto.request.GetFeedsRequest
 import homework.aurumplanet.liner.domain.page.presentation.dto.response.GetFeedListResponse
 import homework.aurumplanet.liner.domain.page.service.CreatePageService
 import homework.aurumplanet.liner.domain.page.service.GetFeedsService
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/page")
@@ -26,9 +22,9 @@ class PageController(
     }
 
     @Operation(summary = "피드 보기")
-    @PostMapping("/feed")
-    fun getFeed(@RequestBody request: GetFeedsRequest): GetFeedListResponse {
-        return getFeedsService.execute(request)
+    @GetMapping("/feed")
+    fun getFeed(@RequestParam userId: Long, @RequestParam page: Int, @RequestParam size: Int): GetFeedListResponse {
+        return getFeedsService.execute(userId, page, size)
     }
 
 }
