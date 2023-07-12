@@ -1,5 +1,6 @@
 package homework.aurumplanet.liner.domain.user.domain
 
+import homework.aurumplanet.liner.domain.page.domain.Page
 import homework.aurumplanet.liner.global.entity.BaseTimeEntity
 import jakarta.persistence.*
 
@@ -18,6 +19,8 @@ class User(
     @Column(length = 20, nullable = false)
     var username: String,
 
+    @OneToMany(mappedBy = "user")
+    var pages: MutableList<Page> = mutableListOf(),
     @Column
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long? = null,
