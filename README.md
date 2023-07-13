@@ -571,8 +571,8 @@
     }
    ```
    또한 `formatToLocalDateTime`함수를 사용하여 LocalDateTime의 형태를 변환하여 가독성을 고려하였습니다.<br><br>
-   ***
-3. 공개 범위
+
+2. 공개 범위
    ---
    
    공개 범위는 `PUBLIC`, `PRIVATE`, `MENTIONED` 이렇게 세 개가 존재합니다.<br><br>
@@ -664,4 +664,132 @@
     }
    ```
      이렇게 이전 `mention`된 사용자와 현재 `mention`할 사용자를 비교하여 `mention`을 `추가/삭제` 해주고<br>
-     `mention`에서 `public`이나 `private`로 변경한다면 `mention`들을 `삭제해주는 로직`을 구현하였습니다.
+     `mention`에서 `public`이나 `private`로 변경한다면 `mention`들을 `삭제해주는 로직`을 구현하였습니다.<br>
+3. Auth/Jwt/Security
+   ---
+   
+   jwt 토큰을 발급하여 토큰으로 로그인을 할 수 있도록 구현하였습니다.<br>
+   jwt토큰은 redis를 사용하여 저장합니다.<br>
+   jwt토큰에 User의 userId를 저장하여 토큰인증을 할 때 userId로 인증합니다.<br>
+   회원가입, 로그인 경로 외엔 토큰 없이는 접근하지 못하도록 구현하였습니다.<br>
+   AuthDetailsService
+   ```kotlin
+   @Service
+   class AuthDetailsService(
+      val userFacade: UserFacade,
+   ) : UserDetailsService {
+      //token의 userId로 사용자 인증
+       override fun loadUserByUsername(userId: String): UserDetails {
+           return AuthDetails(userFacade.findUserByUserId(userId.toLong()))
+    }
+   }
+   ```
+   JwtTokenProvider
+   ```kotlin
+   @Component
+   class JwtTokenProvider(
+       val jwtProperties: JwtProperties,
+       val refreshTokenRepository: RefreshTokenRepository
+   ) {
+    //accessToken 발급
+    fun createAccessToken(userId: String): String {
+        return createToken(userId, jwtProperties.accessTokenValidTime);
+    }
+    //refreshToken 발급
+    fun createRefreshToken(userId: String): String {
+        val token = createToken(userId, jwtProperties.refreshTokenValidTime)
+        refreshTokenRepository.save(
+            RefreshToken(token = token, email = userId)
+        )
+        return token
+    }
+
+    private fun createToken(userId: String, time: Long): String {
+        val claims = Jwts.claims()
+        //userId를 사용하여
+        claims["userId"] = userId
+        val now = Date()
+
+        return Jwts.builder()
+            .setClaims(claims)
+            .setIssuedAt(now)
+            .setExpiration(Date(now.time + time))
+            .signWith(getSigningKey(jwtProperties.secretKey), SignatureAlgorithm.HS256)
+            .compact()
+    }
+
+    private fun getSigningKey(secretKey: String): Key {
+        val keyBytes = secretKey.toByteArray(Charsets.UTF_8)
+        return Keys.hmacShaKeyFor(keyBytes)
+    }
+
+    fun getUserId(token: String): String {
+        return extractAllClaims(token)
+            .get("userId", String::class.java)
+    }
+
+    private fun extractAllClaims(token: String): Claims {
+        try {
+            return Jwts.parserBuilder()
+                .setSigningKey(getSigningKey(jwtProperties.secretKey))
+                .build()
+                .parseClaimsJws(token).body
+        } catch (e: ExpiredJwtException) {
+            throw ExpiredTokenException.EXCEPTION
+        } catch (e: Exception) {
+            throw InvalidTokenException.EXCEPTION
+        }
+    }
+
+    fun resolveToken(request: HttpServletRequest): String? {
+        val bearer = request.getHeader(jwtProperties.header)
+        return parseToken(bearer)
+    }
+
+    private fun parseToken(bearer: String?): String? {
+        if (bearer != null && bearer.startsWith(jwtProperties.prefix)) {
+            return bearer.replace(jwtProperties.prefix, "")
+        }
+
+        return null
+    }
+
+   }
+   ```
+   SecurityConfig(filterChain)
+   ```kotlin
+   @Bean
+    @Throws(Exception::class)
+    fun filterChain(http: HttpSecurity): SecurityFilterChain? {
+        http
+            .cors().configurationSource { request ->
+                val cors = CorsConfiguration()
+                cors.allowedOrigins = listOf("http://localhost:3000")
+                cors.allowedMethods = listOf("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                cors.allowedHeaders = listOf("*")
+                cors
+            }
+            .and()
+            .httpBasic().disable()
+            .csrf().disable()
+            .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            .and()
+            .authorizeRequests()
+            //로그인, 회원가입 외엔 토큰 없이 접근 못함
+            .requestMatchers(HttpMethod.POST, "/login").permitAll()
+            .requestMatchers(HttpMethod.POST, "/user").permitAll()
+            .anyRequest().authenticated()
+            .and()
+            .formLogin().disable()
+
+        http
+            .addFilterBefore(
+                JwtAuthenticationFilter(authDetailsService, jwtTokenProvider),
+                UsernamePasswordAuthenticationFilter::class.java
+            )
+            .addFilterBefore(JwtExceptionFilter(mapper), JwtAuthenticationFilter::class.java)
+
+        return http.build()
+   ```
+   
+   
