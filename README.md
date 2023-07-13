@@ -583,6 +583,7 @@
    또한 공개 범위는 동적으로 변경될 수 있어야 합니다.<br><br>
    그래서 어떻게 하면 쿼리문을 적게 부르면서 공개범위를 변경할 수 있을까 고민해 보았습니다.<br>
    그리고 제가 구현한 방법은
+   UpdatePageService
    ```kotlin
    @Transactional
     fun execute(request: UpdatePageRequest) {
@@ -658,4 +659,4 @@
         }
     }
    ```
-   이렇게 구현하였습니다.
+  입니다.
