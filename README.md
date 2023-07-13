@@ -571,6 +571,7 @@
    ```
    또한 `formatToLocalDateTime`함수를 사용하여 LocalDateTime의 형태를 변환하여 가독성을 고려하였습니다.<br><br>
 2. 공개 범위
+   
    공개 범위는 `PUBLIC`, `PRIVATE`, `MENTIONED` 이렇게 세 개가 존재합니다.<br><br>
    `MENTIONED`는 공개할 사용자를 지정할 수 있어서<br>
    `tbl_mention`이라는 테이블을 생성하고 페이지와 멘션된 사용자를 저장하도록 하였습니다.<br><br>
