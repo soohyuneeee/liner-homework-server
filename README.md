@@ -663,5 +663,5 @@
         }
     }
    ```
-  이렇게 이전 mention된 사용자와 현재 mention할 사용자를 비교하여 mention을 추가/삭제 해주고<br>
-  mention에서 public이나 private로 변경한다면 mention들을 삭제해주는 로직을 구현하였습니다.
+     이렇게 이전 mention된 사용자와 현재 mention할 사용자를 비교하여 mention을 추가/삭제 해주고<br>
+     mention에서 public이나 private로 변경한다면 mention들을 삭제해주는 로직을 구현하였습니다.
