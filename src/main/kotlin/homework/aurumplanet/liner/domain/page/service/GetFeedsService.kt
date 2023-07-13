@@ -1,6 +1,6 @@
 package homework.aurumplanet.liner.domain.page.service
 
-import homework.aurumplanet.liner.domain.collection.domain.enums.OpenStatus
+import homework.aurumplanet.liner.domain.page.domain.enums.OpenStatus
 import homework.aurumplanet.liner.domain.page.domain.PageEntity
 import homework.aurumplanet.liner.domain.page.domain.repository.PageRepository
 import homework.aurumplanet.liner.domain.page.presentation.dto.response.GetFeedListResponse

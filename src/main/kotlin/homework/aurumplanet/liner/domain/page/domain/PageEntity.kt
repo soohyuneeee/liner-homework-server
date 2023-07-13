@@ -1,6 +1,6 @@
 package homework.aurumplanet.liner.domain.page.domain
 
-import homework.aurumplanet.liner.domain.collection.domain.enums.OpenStatus
+import homework.aurumplanet.liner.domain.page.domain.enums.OpenStatus
 import homework.aurumplanet.liner.domain.highlight.domain.Highlight
 import homework.aurumplanet.liner.domain.mention.domain.Mention
 import homework.aurumplanet.liner.domain.user.domain.User

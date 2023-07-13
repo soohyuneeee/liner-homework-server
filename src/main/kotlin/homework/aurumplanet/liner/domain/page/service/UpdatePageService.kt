@@ -1,6 +1,6 @@
 package homework.aurumplanet.liner.domain.page.service
 
-import homework.aurumplanet.liner.domain.collection.domain.enums.OpenStatus
+import homework.aurumplanet.liner.domain.page.domain.enums.OpenStatus
 import homework.aurumplanet.liner.domain.mention.service.CleanUpMentionMemberService
 import homework.aurumplanet.liner.domain.mention.service.CreateMentionService
 import homework.aurumplanet.liner.domain.mention.service.DeleteMentionService
