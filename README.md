@@ -522,6 +522,7 @@
           
 # 기능 설명
 1. 피드 조회
+   ---
    ```kotlin
    @Query("select p from PageEntity p join fetch p.highlights h where p in (select m.page from Mention m where m.user = :user) or p.openStatus = :openStatus order by h.createdAt desc")
        fun findPagesWithMentionsOrPublic(user: User, openStatus: OpenStatus, pageable: Pageable): Page<PageEntity>
@@ -570,7 +571,9 @@
     }
    ```
    또한 `formatToLocalDateTime`함수를 사용하여 LocalDateTime의 형태를 변환하여 가독성을 고려하였습니다.<br><br>
-2. 공개 범위
+   ***
+3. 공개 범위
+   ---
    
    공개 범위는 `PUBLIC`, `PRIVATE`, `MENTIONED` 이렇게 세 개가 존재합니다.<br><br>
    `MENTIONED`는 공개할 사용자를 지정할 수 있어서<br>
@@ -583,7 +586,7 @@
    를 사용하여 멘션된 사용자만 조회가 가능하도록 구현하였습니다.<br><br>
    또한 공개 범위는 동적으로 변경될 수 있어야 합니다.<br><br>
    그래서 어떻게 하면 쿼리문을 적게 부르면서 공개범위를 변경할 수 있을까 고민해 보았습니다.<br>
-   그리고 제가 구현한 방법은
+   그리고 제가 구현한 방법은<br>
    UpdatePageService
    ```kotlin
    @Transactional
@@ -660,4 +663,5 @@
         }
     }
    ```
-  입니다.
+  이렇게 이전 mention된 사용자와 현재 mention할 사용자를 비교하여 mention을 추가/삭제 해주고<br>
+  mention에서 public이나 private로 변경한다면 mention들을 삭제해주는 로직을 구현하였습니다.
