@@ -4,12 +4,14 @@
 <summary> user</summary>
 <div markdown="1">
 
-1. **회원가입**
-   <label style="color: yellow"><POST\></label>
-   <br>
-   <br>
+1. `POST` **회원가입**
 
-   request
+   URL :
+   `/user`
+   <br>
+   <br>
+   `REQUEST`
+   ---
    ```json
    {
     "userId" :12333,
@@ -18,24 +20,55 @@
     "password" : "1234"
    }
    ```
-   response
+   `RESPONSE`
+   ---
+   사용자가 이미 존재할 경우
+   ```json
+   {
+    "status": "UNPROCESSABLE_ENTITY",
+    "message": "사용자가 이미 존재합니다."
+   }
+   ```
+   ---
+   정상적인 작동
    ```
    200 Ok
    ```
 
-2. **로그인**
-   <label style="color: yellow"><POST\></label>
-   <br>
-   <br>
+3. `POST` **로그인**
 
-   request
+   URL :
+   `/login`
+   <br>
+   <br>
+   `REQUEST`
+   ---
    ```json
    {
     "userId" : 12345,
     "password" : "1234"
    }
    ```
-   response
+   `RESPONSE`
+   ---
+
+   존재하지 않는 userId를 입력한 경우
+   ```json
+   {
+    "status": "NOT_FOUND",
+    "message": "사용자가 없습니다."
+   }
+   ```
+   ---
+   잘못된 비밀번호를 입력한 경우
+   ```json
+   {
+    "status": "UNAUTHORIZED",
+    "message": "비밀번호가 틀렸습니다."
+   }
+   ```
+   ---
+   정상적인 작동
    ```json
    {
     "accessToken": "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiIxMjM0NSIsImlhdCI6MTY4OTE3ODI0NywiZXhwIjoxNjg5MTgxODQ3fQ.QV1KvxG2GKFcZ3VhR7PU5NLY16LytJpBIZ7dSyjpbUQ",
@@ -52,49 +85,305 @@
 <summary> page</summary>
 <div markdown="1">
 
-1. **페이지 생성**
-   <label style="color: yellow"><POST\></label>
+1. `POST` **페이지 생성**
+
+   URL :
+   `/page`
    <br>
    <br>
-
-request
-
+   `REQUEST`
+   ---
+   
+   `openStatus`를 `PUBLIC`또는 `PRIVATE`로 하는 경우
    ```json
-{
-  "userId": 123,
-  "pageUrl": "null",
-  "title": "보이냐?",
-  "openStatus": "PUBLIC",
-  "mentionedUserName": null
-}
+   {
+     "userId": 123,
+     "pageUrl": "google.com",
+     "title": "보이나?",
+     "openStatus": "PUBLIC",
+     "mentionedUserName": null
+   }
+   ```
+   ---
+   `openStatus`를 `MENTIONED`로 하는 경우
+   ```json
+   {
+     "userId": 123,
+     "pageUrl": "google.com",
+     "title": "보이나?",
+     "openStatus": "MENTIONED",
+     "mentionedUserName": "@05tngus,@05tngus95,@05tngus959595"
+   }
    ```
 
-response
-이미 해당 pageUrl를 저장한 페이지가 있을 경우
+   `RESPONSE`
+   ---
+   
+   이미 해당 pageUrl를 저장한 페이지가 있을 경우
 
    ```json
    {
-  "status": "UNPROCESSABLE_ENTITY",
-  "message": "페이지가 이미 존재합니다."
-}
+     "status": "UNPROCESSABLE_ENTITY",
+     "message": "페이지가 이미 존재합니다."
+   }
 
    ```
-
-```
-
-200 Ok
-
+   ---
+   `mentionedUserName`에 존재하지 않는 값이 들어갔을 경우
+   ```json
+   {
+    "status": "NOT_FOUND",
+    "message": "사용자가 없습니다."
+   }
+   ```
+   ---
+   정상적인 작동
    ```
 
-해당 pageUrl를 저장한 페이지가 없을 경우
+   200 Ok
 
-```json
-{
-  "status": "NOT_FOUND",
-  "message": "페이지가 없습니다."
-}
-```
+   ```
+3. `PATCH` **페이지 수정**
+ 
+   URL :
+   `/page`
+   <br>
+   <br>
+   `REQUEST`
+   ---
+   
+   `openStatus`를 `PUBLIC`또는 `PRIVATE`로 하는 경우
+   ```json
+   {
+    "pageId" : 8,
+    "title" : "테스트페이지",
+    "openStatus" : "PRIVATE",
+    "mentionedUserName" : null
 
+   }
+   ```
+   ---
+   `openStatus`를 `MENTIONED`로 하는 경우
+   ```json
+   {
+    "pageId" : 8,
+    "title" : "테스트페이지",
+     "title": "보이나?",
+     "openStatus": "MENTIONED",
+     "mentionedUserName": "@05tngus,@05tngus95,@05tngus959595"
+   }
+   ```
+
+   `RESPONSE`
+   ---
+   
+   이미 해당 pageUrl를 저장한 페이지가 있을 경우
+
+   ```json
+   {
+     "status": "UNPROCESSABLE_ENTITY",
+     "message": "페이지가 이미 존재합니다."
+   }
+
+   ```
+   ---
+   `mentionedUserName`에 존재하지 않는 값이 들어갔을 경우
+   ```json
+   {
+    "status": "NOT_FOUND",
+    "message": "사용자가 없습니다."
+   }
+   ```
+   ---
+   정상적인 작동
+   ```
+
+   200 Ok
+
+   ```
+3. `GET` **해당 페이지 조회**
+   
+   URL :
+   `/page?{pageId}`
+   <br>
+   <br>
+   `RESPONSE`
+   ---
+   
+   `pageId`에 존재하지 않는 값이 들어왔을 경우
+
+   ```json
+   {
+    "status": "NOT_FOUND",
+    "message": "페이지가 없습니다."
+   }
+   ```
+   ---
+   정상적인 작동
+   ```json
+   {
+    "nickname": "조수현",
+    "username": "@05tngus",
+    "pageCreateAt": "Jul 12, 2023",
+    "pageId": 3,
+    "pageUrl": "google.come",
+    "pageTitle": "안보이겠지?",
+    "highlights": [
+        {
+            "highlightId": 2,
+            "colorHex": "#ffff8d",
+            "text": "dldldlaa"
+        }
+    ]
+   }
+   ```
+3. `GET` **내가만든 페이지 조회**
+   
+   URL :
+   `/page/my`
+   <br>
+   <br>
+   `REQUEST`
+   ---
+   
+   파라미터로
+   
+   `page` : Int
+   
+   `size` : Int
+
+   
+   `RESPONSE`
+   ---
+   
+   정상적인 작동
+   ```json
+   {
+    "currentPage": 1,
+    "hasMorePage": false,
+    "feedList": [
+        {
+            "nickname": "조수현",
+            "username": "@05tngus",
+            "pageCreateAt": "Jul 12, 2023",
+            "pageId": 4,
+            "pageUrl": "google.comaaae",
+            "pageTitle": "보이나?",
+            "highlights": [
+                {
+                    "highlightId": 4,
+                    "colorHex": "#ffff8d",
+                    "text": "다른거추가"
+                },
+                {
+                    "highlightId": 3,
+                    "colorHex": "#ffff8d",
+                    "text": "dldldlaa"
+                }
+            ]
+        },
+        {
+            "nickname": "조수현",
+            "username": "@05tngus",
+            "pageCreateAt": "Jul 12, 2023",
+            "pageId": 3,
+            "pageUrl": "google.come",
+            "pageTitle": "안보이겠지?",
+            "highlights": [
+                {
+                    "highlightId": 2,
+                    "colorHex": "#ffff8d",
+                    "text": "dldldlaa"
+                }
+            ]
+        },
+        {
+            "nickname": "조수현",
+            "username": "@05tngus",
+            "pageCreateAt": "Jul 12, 2023",
+            "pageId": 1,
+            "pageUrl": "google.com",
+            "pageTitle": "테스트페이지",
+            "highlights": [
+                {
+                    "highlightId": 1,
+                    "colorHex": "#ffff8d",
+                    "text": "dldldl"
+                }
+            ]
+        }
+    ]
+   }
+   ```
+5. `GET` **피드보기**
+
+   URL :
+   `/page/feed`
+   <br>
+   <br>
+   `REQUEST`
+   ---
+   
+   파라미터로
+
+   `userId` : Long (토큰으로 사용자 정보를 부를 수 있지만 API명세에 필수값이라 추가)
+   
+   `page` : Int
+   
+   `size` : Int
+
+
+
+
+   `RESPONSE`
+   ---
+   
+
+   정상적인 작동
+   ```json
+   {
+    "currentPage": 1,
+    "hasMorePage": false,
+    "feedList": [
+        {
+            "nickname": "조수현",
+            "username": "@05tngus",
+            "pageCreateAt": "Jul 12, 2023",
+            "pageId": 4,
+            "pageUrl": "google.comaaae",
+            "pageTitle": "보이나?",
+            "highlights": [
+                {
+                    "highlightId": 4,
+                    "colorHex": "#ffff8d",
+                    "text": "다른거추가"
+                },
+                {
+                    "highlightId": 3,
+                    "colorHex": "#ffff8d",
+                    "text": "dldldlaa"
+                }
+            ]
+        },
+        {
+            "nickname": "조수현",
+            "username": "@05tngus",
+            "pageCreateAt": "Jul 12, 2023",
+            "pageId": 1,
+            "pageUrl": "google.com",
+            "pageTitle": "테스트페이지",
+            "highlights": [
+                {
+                    "highlightId": 1,
+                    "colorHex": "#ffff8d",
+                    "text": "dldldl"
+                }
+            ]
+        }
+    ]
+   }
+   ```
+   
 </div>
 </details>
 
@@ -102,32 +391,93 @@ response
 <summary> highlight</summary>
 <div markdown="1">
 
-1. **하이라이트 생성**
-   <label style="color: yellow"><POST\></label>
+1. `POST` **하이라이트 생성**
+   
+   URL :
+   `/highlight`
    <br>
    <br>
-
-request
-
+   `REQUEST`
+   ---
+   
+      ```json
+      {
+     "pageUrl": "google.comaaae",
+     "colorHex": "#ffff8d",
+     "text": "다른거추가"
+      }
+      ```
+   
+   `RESPONSE`
+   ---
+   
+   해당 `pageUrl`의 페이지가 저장되어있지 않은 경우
    ```json
    {
-  "pageUrl": "google.comaaae",
-  "colorHex": "#ffff8d",
-  "text": "다른거추가"
-}
+     "status": "NOT_FOUND",
+     "message": "페이지가 없습니다."
+   }
    ```
-
-response
-
+   ---
+   정상적인 작동
    ```
    200 Ok
    ```
+3. `PATCH` **하이라이트 수정**
+
+   URL :
+   `/highlight`
+   <br>
+   <br>
+   `REQUEST`
+   ---
+   
+      ```json
+      {
+     "highlightId": 123",
+     "colorHex": "#ffff8d",
+     "text": "다른거추가"
+      }
+      ```
+   
+   `RESPONSE`
+   ---
+   
+   정상적인 작동
+   ```
+   200 Ok
+   ```
+5. `DELETE` **하이라이트 삭제**
+
+   URL :
+   `/highlight`
+   <br>
+   <br>
+   `REQUEST`
+   ---
+   
+      ```json
+      {
+     "highlightId": 123
+      }
+      ```
+   
+   `RESPONSE`
+   ---
+   
+   정상적인 작동
+   ```
+   200 Ok
+   ```
+
+   
 </div>
 </details>
 
 # 데이터 스키마와 인덱스
 
-![img.png](img.png)
+<img width="431" alt="image" src="https://github.com/soohyuneeee/liner-homework-server/assets/80656686/115b4c9e-3cdc-48ba-a02b-a09e466c80b8">
+
 
 # 요구사항
 
@@ -147,6 +497,3 @@ response
     - [ ] 피드는 유저가 해당 페이지에 최초로 하이라이트한 시간을 기준으로 내림차순 된다.
     - [ ] 피드의 페이지에 조회되는 하이라이트는 최대 3개이다.
     - [ ] 피드는 페이징처리가 된다.
-
-
-- 
